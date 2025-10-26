@@ -47,8 +47,8 @@ export const sendWelcomeEmail = async (params: SendEmailParams) => {
       ...params,
       // Make sure username is included for the template
       username: params.username,
-      from_name: params.from_name || 'Tu Aplicación',
-      reply_to: params.reply_to || 'noreply@tuaplicacion.com',
+      from_name: params.from_name || 'TheWatcher',
+      reply_to: params.reply_to || 'noreply@thewatchernicaragua.com',
     };
 
     console.log('Sending email with data:', {
