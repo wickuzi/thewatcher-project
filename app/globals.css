@@ -2,37 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Fix for Safari viewport units */
-@supports (-webkit-touch-callout: none) {
-  .h-screen {
-    height: -webkit-fill-available;
-  }
-  .min-h-screen {
-    min-height: -webkit-fill-available;
-  }
-}
-
-/* Prevent Safari from adding margins */
-@layer base {
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-    -webkit-text-size-adjust: 100%;
-    -webkit-tap-highlight-color: transparent;
-  }
-  
-  /* Ensure full viewport height on mobile */
-  #__next {
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-    display: flex;
-    flex-direction: column;
-  }
-}
-
 @layer base {
   :root {
     --radius: 0.5rem;
@@ -166,7 +135,7 @@
 
   /* Watch List */
   .watch-list {
-    @apply mt-10 flex flex-wrap gap-5 max-xs:justify-between xs:gap-10;
+@apply mt-10 flex flex-wrap justify-center gap-5 xs:gap-10 mr-11;
   }
 
   /* Watch Overview */
