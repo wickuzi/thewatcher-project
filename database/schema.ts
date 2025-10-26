@@ -9,8 +9,9 @@ export const users = pgTable("users", {
   fullName: text("full_name").notNull(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
-  status:STATUS_ENUM('status').default('PENDING'),
-  role:ROLE_ENUM('role').default('USER'),
-  lastActivityDate : date('last_activity_date').defaultNow(),
-  createdAt : timestamp('created_at', {withTimezone: true}).defaultNow(),
+  status: STATUS_ENUM('status').default('PENDING'),
+  role: ROLE_ENUM('role').default('USER'),
+  lastActivityDate: date('last_activity_date').defaultNow(),
+  lastInactiveEmailSent: date('last_inactive_email_sent'),
+  createdAt: timestamp('created_at', {withTimezone: true}).defaultNow(),
 });

@@ -119,7 +119,8 @@ export const signUp = async (params: AuthCredentials) => {
         const emailParams = {
             username: fullName.trim(),  // Changed from to_name to username
             to_email: email.trim(),
-            message: '¡Bienvenido a nuestra plataforma! Gracias por registrarte.'
+            message: '¡Bienvenido a nuestra plataforma! Gracias por registrarte.',
+            subject: '¡Bienvenido a TheWatcher!'
         };
         
         console.log('Sending welcome email with params:', JSON.stringify(emailParams, null, 2));

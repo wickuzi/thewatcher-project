@@ -10,6 +10,7 @@ interface SendEmailParams {
   username: string;  // Changed from to_name to match template
   to_email: string;
   message: string;
+  subject: string;
   from_name?: string;
   reply_to?: string;
 }
