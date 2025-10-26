@@ -86,7 +86,7 @@
     @apply w-full min-h-14 border-none text-base font-bold placeholder:font-normal text-white placeholder:text-light-100 focus-visible:ring-0 focus-visible:shadow-none bg-dark-300 !important;
   }
 
-  /* Book Card */
+  /* watch Card */
   .watch-title {
     @apply mt-2 line-clamp-1 text-base font-semibold text-white xs:text-xl;
   }
@@ -112,7 +112,7 @@
     @apply py-4 lg:px-16 px-10 flex justify-center items-center w-full rounded-lg;
   }
 
-  /* Book Cover */
+  /* watch Cover */
   .watch-cover_extra_small {
     @apply w-[28.95px] h-10;
   }
@@ -135,7 +135,7 @@
 
   /* Watch List */
   .watch-list {
-@apply mt-10 flex flex-wrap justify-center gap-5 xs:gap-10 mr-11;
+  @apply mt-10 flex flex-wrap justify-center gap-5 xs:gap-10 mr-7;
   }
 
   /* Watch Overview */
@@ -170,18 +170,7 @@
   .watch-overview_btn {
     @apply mt-4 min-h-14 max-w-sm bg-primary text-dark-100 hover:bg-primary/90 max-md:w-full !important;  }
 
-  /* File Upload */
-  .upload-btn {
-    @apply flex min-h-14 w-full items-center justify-center gap-1.5 rounded-md;
-  }
-
-  .upload-filename {
-    @apply mt-1 text-center text-xs;
-  }
-
-  .progress {
-    @apply rounded-full bg-green-800 p-0.5 text-center font-bebas-neue text-[8px] font-bold leading-none text-light-100;
-  }
+  
 
   /* Search */
   .search {
