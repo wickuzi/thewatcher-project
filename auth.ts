@@ -89,17 +89,16 @@ const authConfig: NextAuthConfig = {
   debug: process.env.NODE_ENV === 'development',
 };
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+// Export the auth configuration
+export const authOptions: NextAuthConfig = {
   ...authConfig,
   pages: {
     signIn: "/sign-in",
-    error: "/sign-in", // Redirect to sign-in on error
+    error: "/sign-in",
   },
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // Allows relative callback URLs
       if (url.startsWith("/")) return `${baseUrl}${url}`
-      // Allows callback URLs on the same origin
       else if (new URL(url).origin === baseUrl) return url
       return baseUrl
     },
@@ -118,9 +117,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-});
+};
 
-// Custom error handler for auth routes
-const handler = handlers.POST || handlers.GET;
+// Export the handlers and auth functions
+export const { handlers, signIn, signOut, auth } = NextAuth(authOptions);
 
-export { handler as GET, handler as POST };
+// Export the auth configuration for use in other files
+export { authOptions };
