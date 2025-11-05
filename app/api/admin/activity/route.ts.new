@@ -1,0 +1,45 @@
+import { NextResponse } from 'next/server';
+import { db } from '@/database/drizzle';
+import { activities, users, watchs } from '@/database/schema';
+import { desc, eq } from 'drizzle-orm';
+
+type ActivityType = 'watch_added' | 'stock_updated' | 'user_registered' | 'low_stock';
+
+export async function GET() {
+  try {
+    // Get recent activities with user and watch details
+    const recentActivities = await db
+      .select({
+        id: activities.id,
+        type: activities.type,
+        user: users.fullName,
+        email: users.email,
+        watch: watchs.name,
+        details: activities.details,
+        date: activities.createdAt
+      })
+      .from(activities)
+      .leftJoin(users, eq(activities.userId, users.id))
+      .leftJoin(watchs, eq(activities.watchId, watchs.id))
+      .orderBy(desc(activities.createdAt))
+      .limit(20);
+
+    // Format the activities for the frontend
+    const formattedActivities = recentActivities.map(activity => ({
+      id: activity.id,
+      type: activity.type as ActivityType,
+      user: activity.user || 'System',
+      watch: activity.watch,
+      ...(activity.details as object),
+      date: activity.date?.toISOString() || new Date().toISOString()
+    }));
+
+    return NextResponse.json({ activities: formattedActivities });
+  } catch (error) {
+    console.error('Error fetching activities:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch activities' },
+      { status: 500 }
+    );
+  }
+}

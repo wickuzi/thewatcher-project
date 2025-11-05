@@ -8,6 +8,13 @@ import { headers } from "next/headers";
 import rateLimit from "@/lib/ratelimit";
 import { redirect } from "next/navigation";
 import { sendWelcomeEmail } from "@/lib/email";
+import { logActivity } from "@/lib/activityLogger";
+
+interface AuthCredentials {
+  email: string;
+  password: string;
+  fullName?: string;
+}
 
 export const signInWithCredentials = async (params: Pick<AuthCredentials, 'email' | 'password'>) => {
     const { email, password } = params;
@@ -109,11 +116,25 @@ export const signUp = async (params: AuthCredentials) => {
         const hashedPassword = await hash(password, 10);
 
         // Create the user
-        await db.insert(users).values({
+        const [newUser] = await db.insert(users).values({
             fullName: fullName.trim(),
             email: email.trim(),
             password: hashedPassword
-        });
+        }).returning();
+
+        // Log the registration activity
+        if (newUser && newUser.id) {
+            const activityDetails = {
+                email: newUser.email,
+                fullName: newUser.fullName,
+                user: newUser.fullName  // Add user field for backward compatibility
+            };
+            
+            await logActivity('user_registered', {
+                userId: newUser.id,
+                details: activityDetails
+            });
+        }
 
         // Send welcome email
         const emailParams = {

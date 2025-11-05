@@ -1,0 +1,122 @@
+[
+  {
+    "id": "48c1f6d5-bc5e-4328-9fa0-4ff5984b8481",
+    "name": "Omega Seamaster Diver 300M",
+    "brand": "Omega",
+    "category": "Diver",
+    "rating": 5,
+    "price": 5200,
+    "availableStock": 10,
+    "description":
+      "El Omega Seamaster Diver 300M combina ingeniería suiza de precisión con un diseño icónico. Con una caja de acero inoxidable y bisel cerámico, es resistente al agua hasta 300 metros, ideal tanto para el buceo como para el uso diario.",
+    "imageUrl": "https://ik.imagekit.io/davidrocha/watches/images/omega_seamaster.png",
+    "summary":
+      "El Seamaster Diver 300M ofrece un movimiento automático Co-Axial Master Chronometer con una reserva de marcha de 55 horas. Su diseño deportivo y elegante lo convierte en un clásico moderno dentro de la relojería de lujo.",
+    "videoUrl": "https://ik.imagekit.io/davidrocha/watches/videos/omega_seamaster.mp4"
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "name": "Rolex Submariner Date",
+    "brand": "Rolex",
+    "category": "Luxury",
+    "rating": 5,
+    "price": 9700,
+    "availableStock": 5,
+    "description":
+      "El Rolex Submariner Date es el epítome de los relojes de buceo. Fabricado en acero Oystersteel, cuenta con un bisel Cerachrom y una hermeticidad de 300 metros.",
+    "imageUrl": "https://ik.imagekit.io/davidrocha/watches/images/rolex_submariner.png",
+    "summary":
+      "El Submariner Date presenta un movimiento 3235 con una reserva de marcha de 70 horas. Su estética atemporal y fiabilidad lo han convertido en un ícono de Rolex.",
+    "videoUrl": "https://ik.imagekit.io/davidrocha/watches/videos/rolex_submariner.mp4"
+  },
+  {
+    "id": "b2c3d4e5-f6a7-8901-2345-67890abcdef1",
+    "name": "Tag Heuer Carrera Calibre 16",
+    "brand": "Tag Heuer",
+    "category": "Chronograph",
+    "rating": 4,
+    "price": 4350,
+    "availableStock": 12,
+    "description":
+      "El Carrera Calibre 16 es un cronógrafo elegante con inspiración automovilística. Su diseño robusto y sofisticado destaca tanto en entornos deportivos como formales.",
+    "imageUrl": "https://ik.imagekit.io/davidrocha/watches/images/tag_carrera.png",
+    "summary":
+      "Con movimiento automático y resistencia al agua de 100 metros, el Carrera Calibre 16 ofrece precisión, estilo y una presencia inconfundible en la muñeca.",
+    "videoUrl": "https://ik.imagekit.io/davidrocha/watches/videos/tag_carrera.mp4"
+  },
+  {
+    "id": "c3d4e5f6-a7b8-9012-3456-7890abcdef12",
+    "name": "Tissot PRX Powermatic 80",
+    "brand": "Tissot",
+    "category": "Casual",
+    "rating": 5,
+    "price": 750,
+    "availableStock": 30,
+    "description":
+      "El Tissot PRX Powermatic 80 combina el encanto retro de los años 70 con la tecnología moderna. Su movimiento automático ofrece una reserva de marcha de 80 horas.",
+    "imageUrl": "https://ik.imagekit.io/davidrocha/watches/images/tissot_prx.png",
+    "summary":
+      "Su diseño integrado y su acabado cepillado lo convierten en un reloj versátil que se adapta tanto a la oficina como al uso diario. Una excelente opción calidad-precio.",
+    "videoUrl": "https://ik.imagekit.io/davidrocha/watches/videos/tissot_prx.mp4"
+  },
+  {
+    "id": "d4e5f6a7-b8c9-0123-4567-890abcdef123",
+    "name": "Casio G-Shock GA-2100",
+    "brand": "Casio",
+    "category": "Sport",
+    "rating": 4,
+    "price": 120,
+    "availableStock": 100,
+    "description":
+      "El Casio G-Shock GA-2100, también conocido como 'CasiOak', es un reloj ultrarresistente con diseño minimalista. Ofrece resistencia a impactos y al agua hasta 200 metros.",
+    "imageUrl": "https://ik.imagekit.io/davidrocha/watches/images/gshock_ga2100.png",
+    "summary":
+      "Su estructura de carbono reforzado y su perfil delgado lo hacen uno de los modelos más populares de G-Shock. Perfecto para aventuras y uso diario.",
+    "videoUrl": "https://ik.imagekit.io/davidrocha/watches/videos/gshock_ga2100.mp4"
+  },
+  {
+    "id": "e5f6a7b8-c9d0-1234-5678-90abcdef1234",
+    "name": "Seiko Presage Cocktail Time",
+    "brand": "Seiko",
+    "category": "Dress",
+    "rating": 5,
+    "price": 425,
+    "availableStock": 25,
+    "description":
+      "El Seiko Presage Cocktail Time es un reloj automático con inspiración en cócteles japoneses. Su esfera radiante y elegante lo hacen destacar en cualquier ocasión formal.",
+    "imageUrl": "https://ik.imagekit.io/davidrocha/watches/images/Seiko_Presage_Cocktail_Time.png",
+    "summary":
+      "Equipado con movimiento automático 4R35 y una caja de acero pulido, combina elegancia y fiabilidad artesanal japonesa.",
+    "videoUrl": "https://ik.imagekit.io/davidrocha/watches/videos/Seiko_Presage_Cocktail_Time.mp4"
+  },
+  {
+    "id": "f6a7b8c9-d0e1-2345-6789-0abcdef12345",
+    "name": "Citizen Eco-Drive Chrono",
+    "brand": "Citizen",
+    "category": "Eco",
+    "rating": 4,
+    "price": 350,
+    "availableStock": 40,
+    "description":
+      "El Citizen Eco-Drive Chrono utiliza luz natural o artificial para recargarse, eliminando la necesidad de cambiar baterías. Su diseño deportivo es ideal para el uso diario.",
+    "imageUrl": "https://ik.imagekit.io/davidrocha/watches/images/citizen_eco_drive.png",
+    "summary":
+      "Con cronógrafo y resistencia al agua de 100 metros, es una opción funcional, ecológica y moderna para quienes buscan fiabilidad y estilo.",
+    "videoUrl": "https://ik.imagekit.io/davidrocha/watches/videos/citizen_eco_drive.mp4"
+  },
+  {
+    "id": "a7b8c9d0-e1f2-3456-7890-abcdef123456",
+    "name": "Poedagar 613",
+    "brand": "Poedagar",
+    "category": "Luxury",
+    "rating": 5,
+    "price": 40,
+    "availableStock": 15,
+    "description":
+      "El Poedagar 613 es un reloj automático con inspiración en cócteles japoneses. Su esfera radiante y elegante lo hacen destacar en cualquier ocasión formal.",
+    "imageUrl": "https://ik.imagekit.io/davidrocha/watches/images/poedagar_613.png",
+    "summary":
+      "Su movimiento automático ofrece una reserva de marcha de 55 horas. Su diseño icónico lo convierte en un clásico moderno dentro de la relojería de lujo.",
+    "videoUrl": "https://ik.imagekit.io/davidrocha/watches/videos/poedagar_613.mp4"
+  }
+]

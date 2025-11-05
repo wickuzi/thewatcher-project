@@ -135,7 +135,7 @@
 
   /* Watch List */
   .watch-list {
-@apply mt-10 flex flex-wrap justify-center gap-5 xs:gap-10 mr-11;
+@apply mt-10 flex flex-wrap justify-center gap-6 xs:gap-10 mr-7;
   }
 
   /* Watch Overview */
@@ -164,7 +164,7 @@
   }
 
   .watch-description {
-    @apply mt-2 text-justify text-xl text-light-100;
+    @apply mt-2 text-justify text-xl text-light-100 mr-20;
   }
 
   .watch-overview_btn {
@@ -245,7 +245,7 @@
 
   /* Pagination */
   #pagination {
-    @apply flex flex-row justify-end gap-3;
+    @apply flex flex-row justify-end;
   }
 
   .pagination-btn_light {

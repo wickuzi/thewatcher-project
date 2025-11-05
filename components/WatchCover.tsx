@@ -1,7 +1,6 @@
+"use client";
 import { cn } from '@/lib/utils';
-import React from 'react'
-import Image from 'next/image'
-
+import React from 'react';
 type WatchCoverVariant = 'extraSmall' | 'small' | 'medium' | 'regular' | 'wide';
 
 const variantStyles : Record<WatchCoverVariant, string> = {
@@ -14,34 +13,38 @@ const variantStyles : Record<WatchCoverVariant, string> = {
 interface WatchCoverProps {
   className?: string;
   variant?: WatchCoverVariant;
-  coverColor: string;
-  coverImage: string;
+  imageUrl: string;
 }
 
-const WatchCover = ({className, variant="regular", coverColor="#12141d", coverImage="https://placehold.co/400x600.png"}: WatchCoverProps) => {
+const WatchCover = ({className, variant="regular", imageUrl="https://placehold.co/400x600.png"}: WatchCoverProps) => {
+  // Debug: Log the image URL being used
+  console.log('WatchCover - Image URL:', imageUrl);
+  
   return (
-    <div className={cn('relative transition-all duration-300', variantStyles[variant], className,)}>
-   
+    <div className={cn('relative transition-all duration-300 flex justify-center', variantStyles[variant], className,)}>
         
-        {/* Contenedor de la carátula con estilo responsivo para 'left' */}
+        {/* Contenedor de la carátula con estilo responsivo */}
         <div 
             className={cn(
-                'absolute z-10', 
-                'left-[5%]', 
-                'lg:left-[12%]', 
-                'w-[87.5%] h-[88%]', 
-                'rounded-lg'
+                'relative z-10', 
+                'w-[80%] max-w-[500px] h-[88%]',
+                'rounded-lg',
+                'mx-auto' // Centrado automático
             )} 
         >
-          <Image 
-            src={coverImage} 
-            alt="cover" 
-            fill 
-            unoptimized
-            // 💡 ARREGLO: Cambiado de object-fill a object-cover para mantener la proporción y evitar estiramiento
-            className='rounded-lg object-cover'
-            // Prop 'sizes' obligatorio con 'fill' para rendimiento
-            sizes="(max-width: 768px) 100vw, 33vw" 
+          <img
+            src={imageUrl}
+            alt="cover"
+            className='w-full h-full rounded-lg object-cover'
+            loading="lazy"
+            onError={(e) => {
+              console.error('Error loading image. Original URL:', imageUrl, 'Error:', e);
+              const target = e.target as HTMLImageElement;
+              // Mostrar una imagen de respaldo si la carga falla
+              console.log('Setting fallback image');
+              target.src = 'https://placehold.co/400x600.png?text=Imagen+no+disponible';
+            }}
+            onLoad={() => console.log('Image loaded successfully:', imageUrl)}
           />
         </div>
     </div>

@@ -1,30 +1,42 @@
+
+"use client"
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { WishlistButton } from "./WishlistButton";
 import WatchCover from "./WatchCover";
+import { Watch } from "@/types";
+import { FaWhatsapp } from "react-icons/fa";
 
-interface Watch {
-  name: string;
-  brand: string;
-  category: string;
-  rating: number;
-  price: number;
-  availableStock: number;
-  description: string;
-  colorTheme: string;
-  imageUrl: string;
-  summary: string;
-  videoUrl: string;
+
+
+interface WatchOverviewProps extends Omit<Watch, 'createdAt'> {
+  // Mostrar el botón de añadir a la lista de deseos
+  showWishlistButton?: boolean;
+  // Otras propiedades adicionales si son necesarias
 }
 
-const WatchOverview = ({ name, brand, category, rating, price, availableStock, description, colorTheme, imageUrl, summary, videoUrl }: Watch) => {
+const WatchOverview = ({ 
+  id,
+  name, 
+  brand, 
+  category, 
+  rating, 
+  price, 
+  availableStock, 
+  description, 
+  imageUrl, 
+  videoUrl = '',
+  summary = description, // Usamos description como valor por defecto para summary
+  showWishlistButton = false // Por defecto no mostrar el botón
+}: WatchOverviewProps) => {
     return (
      
       <section className="watch-overview"> 
           
           {}
-          <div className="flex flex-1 flex-col"> 
-              <h1 className="watch-title font-bebas-neue text-4xl text-light-100">{name}</h1>
+          <div className="flex flex-2 flex-col mr-50"> 
+              <h1 className="watch-title font-bebas-neue text-xl text-light-100">{name}</h1>
 
               <div className="watch-info">
                   <p>
@@ -41,17 +53,52 @@ const WatchOverview = ({ name, brand, category, rating, price, availableStock, d
               </div>
               <p className="watch-price">
                   <span className="font-semibold text-light-300">Precio: </span>
-                  <span className="font-semibold text-light-200">${price}</span>
+                  <span className="font-semibold text-light-200">${price.toLocaleString('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
               </p>
               <div className="watch-copies">
                   <p>Disponibles: <span className="font-semibold text-light-300">{availableStock}</span></p>
               </div>
               <p className="watch-description">{description}</p>
               
-              <Button className="watch-overview_btn">
-                  <Image src="/icons/watch.svg" alt="watch" width={20} height={20}/>
-                  <p className="font-bebas-neue text-xl text-dark-100">Comprar Ahora</p>
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4 mt-6">
+                <Button 
+                  className="watch-overview_btn flex-1 bg-green-500 hover:bg-green-600 text-white"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const phoneNumber = '50558655140';
+                    const message = `Hola, estoy interesado en comprar el siguiente reloj:
+
+*${name}*
+Marca: ${brand}
+Precio: $${price.toLocaleString('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;
+                    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
+                  }}
+                >
+                  <FaWhatsapp className="text-lg" />
+                  <p className="font-bebas-neue text-lg text-dark-100 ml-2">Comprar Ahora</p>
+                </Button>
+                {showWishlistButton && (
+                  <WishlistButton 
+                    watch={{
+                      id,
+                      name,
+                      brand,
+                      category,
+                      rating,
+                      price,
+                      cost:0,
+                      availableStock,
+                      description,
+                      imageUrl,
+                      videoUrl,
+                      summary: summary || description,
+                      createdAt: new Date()
+                    }} 
+                    className="flex-1"
+                  />
+                )}
+              </div>
           </div>
 
           {/* Columna de Imágenes (Aparecerá ARRIBA en móvil) */}
@@ -61,20 +108,20 @@ const WatchOverview = ({ name, brand, category, rating, price, availableStock, d
                   <WatchCover
                       variant="wide"
                       className="z-10"
-                      coverColor={colorTheme}
-                      coverImage={imageUrl}
+                      imageUrl={imageUrl}
                   />
 
-                  {/* Segunda copia (sombra/fondo) */}
-                  <div className="absolute left-16 top-10 rotate-12 opacity-40 max-sm:hidden">
+                  {/* Efecto de fondo más sutil */}
+                  <div className="absolute left-10 top-6 rotate-6 opacity-20 max-sm:hidden">
                       <WatchCover
                           variant="wide"
-                          coverColor={colorTheme}
-                          coverImage={imageUrl}
+                          imageUrl={imageUrl}
                       />
                   </div>
               </div>
           </div>
+
+         
       </section>
     );
 };
