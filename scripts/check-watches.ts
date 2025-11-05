@@ -2,6 +2,7 @@ import { watchs } from "@/database/schema";
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { config } from "dotenv";
+import appConfig from "@/lib/config";
 
 // Load environment variables
 config({ path: ".env.local" });
@@ -30,7 +31,7 @@ async function checkWatches() {
     allWatches.forEach((watch: any, index: number) => {
       console.log(`${index + 1}. ${watch.name}`);
       console.log(`   ID: ${watch.id}`);
-      console.log(`   URL: http://localhost:3000/watch/${watch.id}\n`);
+      console.log(`   URL: ${appConfig.env.apiEndpoint}/watch/${watch.id}\n`);
     });
   } catch (error) {
     console.error("❌ Error al buscar relojes:", error);

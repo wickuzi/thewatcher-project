@@ -72,9 +72,9 @@ async function loadRealData() {
   try {
     console.log('Fetching data from API...');
     const [watchesRes, usersRes, activityRes] = await Promise.all([
-      fetch('http://localhost:3000/api/admin/watches/count', { cache: 'no-store' }),
-      fetch('http://localhost:3000/api/admin/users/count', { cache: 'no-store' }),
-      fetch('http://localhost:3000/api/admin/activity', { cache: 'no-store' })
+      fetch('/api/admin/watches/count', { cache: 'no-store' }),
+      fetch('/api/admin/users/count', { cache: 'no-store' }),
+      fetch('/api/admin/activity', { cache: 'no-store' })
     ]);
 
     const watchesData = await watchesRes.json();
