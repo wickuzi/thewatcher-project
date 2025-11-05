@@ -135,11 +135,7 @@
 
   /* Watch List */
   .watch-list {
-<<<<<<< HEAD
 @apply mt-10 flex flex-wrap justify-center gap-6 xs:gap-10 mr-7;
-=======
-  @apply mt-10 flex flex-wrap justify-center gap-5 xs:gap-10 mr-7;
->>>>>>> 84c2edef508ea4ab9f04296bcb0e266f6f544db2
   }
 
   /* Watch Overview */
