@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/database/drizzle';
 import { sql } from 'drizzle-orm';
+import { withCors } from '@/lib/cors';
 
-export async function GET() {
+async function handler() {
   try {
     console.log('Fetching users count...');
     // Get total number of users (excluding admin users)
@@ -38,3 +39,5 @@ export async function GET() {
     );
   }
 }
+
+export const GET = withCors(handler);
