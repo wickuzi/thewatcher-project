@@ -1,4 +1,5 @@
 import { integer, text, boolean, pgTable, uuid, pgEnum, date, timestamp, serial, jsonb } from "drizzle-orm/pg-core";
+import { relations } from 'drizzle-orm';
 
 export const STATUS_ENUM = pgEnum('status',['ACTIVE','PENDING'])
 export const ROLE_ENUM = pgEnum('role',['USER','ADMIN'])
@@ -40,4 +41,32 @@ export const watchs = pgTable('watchs',{
   summary: text('summary').notNull(),
   videoUrl: text('video_url').notNull(),
   createdAt: timestamp('created_at', {withTimezone: true}).defaultNow(),
-})
+});
+
+export const wishlists = pgTable('wishlists', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  watchId: uuid('watch_id').notNull().references(() => watchs.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Relations
+export const wishlistRelations = relations(wishlists, ({ one }) => ({
+  user: one(users, {
+    fields: [wishlists.userId],
+    references: [users.id],
+  }),
+  watch: one(watchs, {
+    fields: [wishlists.watchId],
+    references: [watchs.id],
+  }),
+}));
+
+// Add relations to users and watchs
+export const usersRelations = relations(users, ({ many }) => ({
+  wishlists: many(wishlists),
+}));
+
+export const watchsRelations = relations(watchs, ({ many }) => ({
+  wishlists: many(wishlists),
+}));

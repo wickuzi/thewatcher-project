@@ -6,11 +6,11 @@ import { SignOutButton } from "@/components/SignOutButton";
 import { useWishlist } from "@/context/WishlistContext";
 import { Watch } from "@/types";
 import { Button } from "@/components/ui/button";
-import { HeartOff } from "lucide-react";
+import { HeartOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const ProfilePage = () => {
-  const { wishlist, removeFromWishlist } = useWishlist();
+  const { wishlist, removeFromWishlist, isLoading } = useWishlist();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -22,10 +22,11 @@ const ProfilePage = () => {
     toast.success("Eliminado de tu lista de deseos");
   };
 
-  if (!isClient) {
+  if (!isClient || isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      <div className="flex flex-col items-center justify-center h-64">
+        <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
+        <p className="text-light-200">Cargando tus favoritos...</p>
       </div>
     );
   }
@@ -68,14 +69,14 @@ const ProfilePage = () => {
                     <div className="w-full">
                       <h3 className="text-white font-semibold text-lg">{watch.name}</h3>
                       <p className="text-light-200 text-sm">{watch.brand}</p>
-                      <p className="text-primary font-bold mt-2">${watch.price}</p>
+                      <p className="text-primary font-bold mt-2">C$ {watch.price.toLocaleString('es-NI')}</p>
                     </div>
                   </div>
                 </div>
                 <div className="p-4 flex-1 flex flex-col">
                   <h3 className="text-light-100 font-medium truncate">{watch.name}</h3>
                   <p className="text-light-200 text-sm">{watch.brand}</p>
-                  <p className="text-primary font-bold mt-1">${watch.price}</p>
+                  <p className="text-primary font-bold mt-1">C$ {watch.price.toLocaleString('es-NI')}</p>
                 </div>
               </a>
               <div className="p-4 pt-0" onClick={(e) => e.stopPropagation()}>

@@ -1,10 +1,10 @@
 'use client';
 
 import { Button } from "./ui/button";
-import { Heart, HeartOff } from "lucide-react";
+import { Heart, HeartOff, Loader2 } from "lucide-react";
 import { useWishlist } from "@/context/WishlistContext";
 import { Watch } from "@/types";
-import { toast } from "sonner";
+import { useState } from "react";
 
 interface WishlistButtonProps {
   watch: Watch;
@@ -19,31 +19,56 @@ export const WishlistButton = ({
   variant = "outline",
   size = "default",
 }: WishlistButtonProps) => {
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addToWishlist, removeFromWishlist, isInWishlist, isLoading } = useWishlist();
+  const [isProcessing, setIsProcessing] = useState(false);
   const isWishlisted = isInWishlist(watch.id);
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    if (isWishlisted) {
-      removeFromWishlist(watch.id);
-      toast.success("Eliminado de tu lista de deseos");
-    } else {
-      addToWishlist(watch);
-      toast.success("Añadido a tu lista de deseos");
+    if (isLoading || isProcessing) return;
+    
+    try {
+      setIsProcessing(true);
+      
+      if (isWishlisted) {
+        await removeFromWishlist(watch.id);
+      } else {
+        await addToWishlist(watch);
+      }
+    } catch (error) {
+      console.error('Error updating wishlist:', error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
+  if (isLoading) {
+    return (
+      <Button
+        variant={variant}
+        size={size}
+        className={`watch-overview_btn flex-1 gap-2 ${className}`}
+        disabled
+      >
+        <Loader2 className="h-5 w-5 animate-spin" />
+      </Button>
+    );
+  }
+
   return (
     <Button
-      variant="default"
+      variant={variant}
       size={size}
       onClick={handleClick}
       className={`watch-overview_btn flex-1 gap-2 ${className}`}
+      disabled={isProcessing}
       aria-label={isWishlisted ? "Eliminar de la lista de deseos" : "Añadir a la lista de deseos"}
     >
-      {isWishlisted ? (
+      {isProcessing ? (
+        <Loader2 className="h-5 w-5 animate-spin" />
+      ) : isWishlisted ? (
         <>
           <HeartOff className="h-5 w-5" />
           <span className="font-bebas-neue text-lg text-dark-100">Quitar</span>
