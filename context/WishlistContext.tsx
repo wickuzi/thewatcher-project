@@ -1,7 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { Watch } from '@/types';
+import { useSession } from 'next-auth/react';
 
 type WishlistContextType = {
   wishlist: Watch[];
@@ -15,26 +16,84 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const [wishlist, setWishlist] = useState<Watch[]>([]);
   const [isMounted, setIsMounted] = useState(false);
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
 
-  // Cargar wishlist desde localStorage al montar
-  useEffect(() => {
-    setIsMounted(true);
-    const savedWishlist = localStorage.getItem('wishlist');
-    if (savedWishlist) {
-      try {
-        setWishlist(JSON.parse(savedWishlist));
-      } catch (error) {
-        console.error('Error parsing wishlist', error);
+  // Función para guardar la wishlist actual
+  const saveWishlist = useCallback((currentWishlist: Watch[]) => {
+    if (!isMounted) return;
+    
+    if (userId) {
+      localStorage.setItem(`wishlist_${userId}`, JSON.stringify(currentWishlist));
+      // Limpiar wishlist anónima si existe
+      if (localStorage.getItem('wishlist_anonymous')) {
+        localStorage.removeItem('wishlist_anonymous');
       }
+    } else {
+      localStorage.setItem('wishlist_anonymous', JSON.stringify(currentWishlist));
     }
-  }, []);
+  }, [isMounted, userId]);
 
-  // Guardar wishlist en localStorage cuando cambie
+  // Cargar wishlist cuando cambia el usuario o al montar
   useEffect(() => {
-    if (isMounted) {
-      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    const loadWishlist = () => {
+      if (userId) {
+        // Cargar wishlist del usuario
+        const savedWishlist = localStorage.getItem(`wishlist_${userId}`);
+        if (savedWishlist) {
+          try {
+            setWishlist(JSON.parse(savedWishlist));
+            return;
+          } catch (error) {
+            console.error('Error al cargar la lista de deseos:', error);
+          }
+        }
+      }
+      
+      // Si no hay usuario o no se pudo cargar la wishlist del usuario,
+      // intentar cargar la wishlist anónima
+      const anonymousWishlist = localStorage.getItem('wishlist_anonymous');
+      if (anonymousWishlist) {
+        try {
+          setWishlist(JSON.parse(anonymousWishlist));
+          // Si hay un usuario, migrar la wishlist anónima al usuario
+          if (userId) {
+            localStorage.setItem(`wishlist_${userId}`, anonymousWishlist);
+            localStorage.removeItem('wishlist_anonymous');
+          }
+        } catch (error) {
+          console.error('Error al cargar la lista de deseos anónima:', error);
+        }
+      } else if (wishlist.length === 0) {
+        setWishlist([]);
+      }
+    };
+
+    setIsMounted(true);
+    loadWishlist();
+  }, [userId]);
+
+  // Guardar wishlist cuando cambia
+  useEffect(() => {
+    if (isMounted && wishlist) {
+      saveWishlist(wishlist);
     }
-  }, [wishlist, isMounted]);
+  }, [wishlist, isMounted, saveWishlist]);
+  
+  // Manejar el cierre de sesión
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      // Guardar la wishlist actual antes de que la página se cierre
+      if (wishlist && wishlist.length > 0) {
+        localStorage.setItem('wishlist_anonymous', JSON.stringify(wishlist));
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [wishlist]);
 
   const addToWishlist = (watch: Watch) => {
     setWishlist(prev => {
