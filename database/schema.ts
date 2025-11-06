@@ -31,8 +31,9 @@ export const watchs = pgTable('watchs',{
   brand: text('brand').notNull(),
   category: text('category').notNull(),
   rating: integer('rating').notNull(),
-  price: integer('price').notNull(),
-  cost: integer('cost').notNull().default(0), // Costo del producto
+  // Almacenamos los precios como números enteros de córdobas
+  price: integer('price').notNull(), // Precio en córdobas enteros (ej: 1000 = C$1,000)
+  cost: integer('cost').notNull().default(0), // Costo en córdobas enteros (ej: 500 = C$500)
   availableStock: integer('available_stock').notNull(),
   description: text('description').notNull(),
   imageUrl: text('image_url').notNull(),

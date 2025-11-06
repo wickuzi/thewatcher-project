@@ -7,6 +7,7 @@ import { WishlistButton } from "./WishlistButton";
 import WatchCover from "./WatchCover";
 import { Watch } from "@/types";
 import { FaWhatsapp } from "react-icons/fa";
+import { formatCurrency } from "@/lib/currency";
 
 
 
@@ -53,7 +54,7 @@ const WatchOverview = ({
               </div>
               <p className="watch-price">
                   <span className="font-semibold text-light-300">Precio: </span>
-                  <span className="font-semibold text-light-200">${price.toLocaleString('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
+                  <span className="font-semibold text-light-200">C$ {price.toLocaleString('es-NI')}</span>
               </p>
               <div className="watch-copies">
                   <p>Disponibles: <span className="font-semibold text-light-300">{availableStock}</span></p>
@@ -70,7 +71,7 @@ const WatchOverview = ({
 
 *${name}*
 Marca: ${brand}
-Precio: $${price.toLocaleString('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;
+Precio: C$ ${price.toLocaleString('es-NI')}`;
                     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
                     window.open(whatsappUrl, '_blank');
                   }}

@@ -69,3 +69,69 @@ export async function PATCH(request: Request) {
     );
   }
 }
+
+export async function PUT(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: 'ID del reloj es requerido' },
+        { status: 400 }
+      );
+    }
+
+    const updateData = await request.json();
+    
+    // Verificar si el reloj existe
+    const [existingWatch] = await db
+      .select()
+      .from(watchs)
+      .where(eq(watchs.id, id));
+
+    if (!existingWatch) {
+      return NextResponse.json(
+        { success: false, message: 'Reloj no encontrado' },
+        { status: 404 }
+      );
+    }
+
+    // Actualizar el reloj
+    const [updatedWatch] = await db
+      .update(watchs)
+      .set({
+        ...updateData,
+        updatedAt: new Date()
+      })
+      .where(eq(watchs.id, id))
+      .returning();
+
+    // Registrar la actividad de actualización
+    await db.insert(activities).values({
+      type: 'watch_updated',
+      watchId: id,
+      details: {
+        watchName: updatedWatch.name,
+        changes: {
+          ...(updateData.name && { name: { old: existingWatch.name, new: updateData.name } }),
+          ...(updateData.price && { price: { old: existingWatch.price, new: updateData.price } }),
+          ...(updateData.availableStock && { stock: { old: existingWatch.availableStock, new: updateData.availableStock } })
+        }
+      }
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Reloj actualizado exitosamente',
+      watch: updatedWatch
+    });
+
+  } catch (error) {
+    console.error('Error al actualizar el reloj:', error);
+    return NextResponse.json(
+      { success: false, message: 'Error al actualizar el reloj' },
+      { status: 500 }
+    );
+  }
+}

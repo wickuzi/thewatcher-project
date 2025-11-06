@@ -61,12 +61,16 @@ export const updateWatch = async (id: string, data: Partial<WatchParams>) => {
             throw new Error('Reloj no encontrado');
         }
 
+        // Ensure price and cost are integers
+        const updateData = {
+            ...data,
+            ...(data.price !== undefined && { price: Math.round(Number(data.price)) }),
+            ...(data.cost !== undefined && { cost: Math.round(Number(data.cost)) }),
+        };
+
         const [updatedWatch] = await db
             .update(watchs)
-            .set({
-                ...data,
-                // No incluimos updatedAt ya que no está definido en el esquema
-            })
+            .set(updateData)
             .where(eq(watchs.id, id))
             .returning();
 

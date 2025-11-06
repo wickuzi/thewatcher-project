@@ -373,10 +373,10 @@ export default function DashboardPage() {
                   {displayActivities.map((activity: Activity) => (
                     <div key={activity.id} className="flex items-center gap-4 p-4 border rounded-lg">
                   <div className="flex-1">
-                    <p className="text-sm">{getActivityText(activity)}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <div className="text-sm">{getActivityText(activity)}</div>
+                    <div className="text-xs text-muted-foreground">
                       {new Date(activity.date).toLocaleString()}
-                    </p>
+                    </div>
                   </div>
                 </div>
                   ))}

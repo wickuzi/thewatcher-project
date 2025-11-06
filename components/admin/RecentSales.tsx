@@ -111,17 +111,13 @@ export function RecentSales() {
   console.log('Total revenue:', totalAmount);
   console.log('Total profit:', totalProfit);
   
-  // Format the amounts as currency
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2
-    }).format(amount);
+  // Format numbers with thousands separators
+  const formatCordobas = (amount: number) => {
+    return new Intl.NumberFormat('es-NI').format(amount);
   };
   
-  const formattedAmount = formatCurrency(totalAmount);
-  const formattedProfit = formatCurrency(totalProfit);
+  const formattedAmount = formatCordobas(totalAmount);
+  const formattedProfit = formatCordobas(totalProfit);
 
   return (
     <Card className="col-span-3">
@@ -135,14 +131,14 @@ export function RecentSales() {
             <div className="mt-1 space-y-1">
               {totalAmount > 0 ? (
                 <div className="text-green-600 font-medium text-sm">
-                  Ventas: +{formattedAmount}
+                  Ventas: +C$ {formattedAmount}
                 </div>
               ) : (
                 <div className="text-gray-500 text-xs">Sin ventas registradas</div>
               )}
               {totalProfit !== 0 && (
                 <div className={`text-sm ${totalProfit >= 0 ? 'text-green-600' : 'text-red-600'} font-medium`}>
-                  {totalProfit >= 0 ? 'Ganancia' : 'Pérdida'}: {totalProfit >= 0 ? '+' : ''}{formattedProfit}
+                  {totalProfit >= 0 ? 'Ganancia' : 'Pérdida'}: {totalProfit >= 0 ? '+' : ''}C$ {formattedProfit}
                 </div>
               )}
             </div>
@@ -171,17 +167,26 @@ export function RecentSales() {
                 formattedDate = 'Fecha no disponible';
               }
 
+              const quantity = sale.details?.quantity || 1;
+              const price = typeof sale.price === 'number' ? sale.price : 
+                           (sale.details?.price ? Number(sale.details.price) : 0);
+              const cost = typeof sale.cost === 'number' ? sale.cost : 
+                          (sale.details?.cost ? Number(sale.details.cost) : 0);
+              const validPrice = isNaN(price) ? 0 : Number(price);
+              const validCost = isNaN(cost) ? 0 : Number(cost);
+              const saleRevenue = validPrice * quantity;
+              const saleCost = validCost * quantity;
+              const saleProfit = saleRevenue - saleCost;
+
               return (
                 <div key={sale.id} className="p-4 hover:bg-gray-50 transition-colors">
                   <div className="flex justify-between items-start">
                     <div>
-                      <div className="font-medium">
-                        Venta de {watchName}
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        {remainingText}
-                      </p>
-                      <p className="text-xl font-bold">{totalSales} {totalSales === 1 ? 'unidad' : 'unidades'}</p>
+                      <p className="font-medium">Total: C$ {formatCordobas(saleRevenue)}</p>
+                      <p className="text-sm text-muted-foreground">Costo: C$ {formatCordobas(saleCost)}</p>
+                      <p className="text-sm font-medium text-green-600">Ganancia: C$ {formatCordobas(saleProfit)}</p>
+                      <p className="text-sm text-muted-foreground">{remainingText}</p>
+                      <p className="text-xl font-bold">{quantity} {quantity === 1 ? 'unidad' : 'unidades'}</p>
                       <p className="text-xs text-muted-foreground mt-1">
                         {formattedDate}
                       </p>

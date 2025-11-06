@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import WatchCover from './WatchCover';
 import { Watch } from '@/types';
+import { formatCurrency } from '@/lib/currency';
 
 const WatchCard = ({
   id,
@@ -25,7 +26,7 @@ const WatchCard = ({
             <div className="hidden lg:absolute lg:inset-0 lg:mt-0.2 lg:mr-5 lg:mb-0.2 lg:ml-5 lg:mb-8 lg:bg-black/70 lg:opacity-0 lg:group-hover:opacity-100 lg:transition-opacity lg:duration-300 lg:flex lg:flex-col lg:justify-center lg:items-center lg:p-4 lg:text-center">
               <h3 className="text-white text-lg font-medium mb-1">{name}</h3>
               <p className="text-light-200 text-sm mb-2">{brand}</p>
-              <p className="text-primary font-semibold">${price}</p>
+              <p className="text-primary font-semibold">C$ {price.toLocaleString('es-NI')}</p>
             </div>
           </div>
           
@@ -36,7 +37,7 @@ const WatchCard = ({
         <div className="lg:hidden">
           <div className="mt-2 px-2">
             <p className="text-light-100 text-sm font-medium mb-0.5 line-clamp-1">{name}</p>
-            <p className="text-primary font-bold text-base">${price}</p>
+            <p className="text-primary font-bold text-base">C$ {price.toLocaleString('es-NI')}</p>
           </div>
         </div>
       </Link>

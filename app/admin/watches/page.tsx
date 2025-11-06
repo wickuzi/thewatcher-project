@@ -140,7 +140,7 @@ export default function WatchesPage() {
                   <tr key={watch.id} className='hover:bg-gray-50'>
                     <td className='whitespace-nowrap px-6 py-4'>{watch.name}</td>
                     <td className='whitespace-nowrap px-6 py-4'>{watch.brand}</td>
-                    <td className='whitespace-nowrap px-6 py-4'>${watch.price}</td>
+                    <td className='whitespace-nowrap px-6 py-4'>C$ {watch.price.toLocaleString('es-NI')}</td>
                     <td className='whitespace-nowrap px-6 py-4'>
                       <div className='flex items-center gap-2'>
                         <span className={`min-w-[20px] text-center ${

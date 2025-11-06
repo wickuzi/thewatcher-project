@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { Watch } from "@/types";
+import { formatCurrency } from "@/lib/currency";
 
 import {
   Form,
@@ -50,6 +51,7 @@ const WatchForm = ({ type, initialValues, onSubmit, onCancel }: Props) => {
   const [videoSource, setVideoSource] = useState<'upload' | 'youtube'>('upload');
   
   // Set default values based on initialValues prop
+  // Mostrar valores enteros de córdobas
   const defaultValues = {
     name: initialValues?.name || "",
     brand: initialValues?.brand || "",
@@ -85,27 +87,43 @@ const WatchForm = ({ type, initialValues, onSubmit, onCancel }: Props) => {
       });
     }
 
-    // Default behavior for create
     try {
-      const result = await createWatch({
+      // Asegurarse de que los valores sean números enteros
+      const payload = {
         ...values,
-        price: Number(values.price),
+        price: Math.round(Number(values.price)), // Guardar como número entero de córdobas
+        cost: Math.round(Number(values.cost)),   // Guardar como número entero de córdobas
         rating: Number(values.rating),
         availableStock: Number(values.availableStock),
-      });
+      };
+
+      let result;
+      
+      if (type === 'update' && initialValues?.id) {
+        // Update existing watch
+        result = await fetch(`/api/admin/watches/${initialValues.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        }).then(res => res.json());
+      } else {
+        // Create new watch
+        result = await createWatch(payload);
+      }
       
       if (result.success) {
         toast({
-          title: "Éxito",
-          description: "Reloj agregado exitosamente",
+          title: type === 'update' ? 'Actualización exitosa' : 'Reloj agregado exitosamente',
+          description: type === 'update' 
+            ? 'El reloj se ha actualizado correctamente' 
+            : 'El reloj se ha creado correctamente',
         });
         router.push(`/admin/watches`);
+        router.refresh(); // Refresh the page to show updated data
       } else {
-        toast({
-          title: "Error",
-          description: result.message || "Ocurrió un error al guardar",
-          variant: "destructive",
-        });
+        throw new Error(result.message || 'Error al procesar la solicitud');
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -217,25 +235,25 @@ const WatchForm = ({ type, initialValues, onSubmit, onCancel }: Props) => {
           render={({ field }) => (
             <FormItem className="flex flex-col gap-1">
               <FormLabel className="text-base font-normal text-dark-500">
-                Precio de Venta (USD)
+                Precio de Venta (C$)
               </FormLabel>
               <FormControl>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">C$</span>
                   <Input
                     type="number"
                     required
-                    placeholder="0.00"
+                    placeholder="0"
                     min="0"
-                    step="0.01"
-                    value={field.value || ''}
+                    step="1"
+                    value={field.value ?? ''}
                     onChange={(e) => {
-                      const value = parseFloat(e.target.value);
-                      field.onChange(isNaN(value) ? 0 : value);
+                      const value = parseInt(e.target.value) || 0;
+                      field.onChange(Math.max(0, value)); // Asegurar que no sea negativo
                     }}
                     onBlur={(e) => {
-                      const value = parseFloat(e.target.value);
-                      field.onChange(isNaN(value) ? 0 : Number(value.toFixed(2)));
+                      const value = parseInt(e.target.value) || 0;
+                      field.onChange(Math.max(0, value)); // Asegurar que no sea negativo
                     }}
                     className="watch-form_input pl-8 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
@@ -251,25 +269,25 @@ const WatchForm = ({ type, initialValues, onSubmit, onCancel }: Props) => {
           render={({ field }) => (
             <FormItem className="flex flex-col gap-1">
               <FormLabel className="text-base font-normal text-dark-500">
-                Costo (USD)
+                Costo (C$)
               </FormLabel>
               <FormControl>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">C$</span>
                   <Input
                     type="number"
                     required
-                    placeholder="0.00"
+                    placeholder="0"
                     min="0"
-                    step="0.01"
-                    value={field.value || ''}
+                    step="1"
+                    value={field.value ?? ''}
                     onChange={(e) => {
-                      const value = parseFloat(e.target.value);
-                      field.onChange(isNaN(value) ? 0 : value);
+                      const value = parseInt(e.target.value) || 0;
+                      field.onChange(Math.max(0, value)); // Asegurar que no sea negativo
                     }}
                     onBlur={(e) => {
-                      const value = parseFloat(e.target.value);
-                      field.onChange(isNaN(value) ? 0 : Number(value.toFixed(2)));
+                      const value = parseInt(e.target.value) || 0;
+                      field.onChange(Math.max(0, value)); // Asegurar que no sea negativo
                     }}
                     className="watch-form_input pl-8 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />

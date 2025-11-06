@@ -21,15 +21,16 @@ export interface AuthCredentials{
     password: string;
 }
 
-export interface WatchParams{
+export interface WatchParams {
     name: string;
     brand: string;
     category: string;
     rating: number;
     price: number;
+    cost: number;
     availableStock: number;
     description: string;
     imageUrl: string;
     summary: string;
-    videoUrl:string;
+    videoUrl: string;
 }
