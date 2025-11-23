@@ -26,7 +26,7 @@ const ProfilePage = () => {
     return (
       <div className="flex flex-col items-center justify-center h-64">
         <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
-        <p className="text-light-200">Cargando tus favoritos...</p>
+        <p className="text-light-100">Recarga la página si no cargan tus relojes.</p>
       </div>
     );
   }
