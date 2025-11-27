@@ -16,6 +16,7 @@ const WatchCard = ({
       <Link href={`/watch/${id}`} className="block">
         <div className="relative aspect-[3/4] overflow-hidden rounded-lg">
           {/* Image */}
+          
           <div className="relative w-full h-full group">
             <WatchCover 
               imageUrl={imageUrl} 

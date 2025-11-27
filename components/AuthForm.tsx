@@ -14,6 +14,7 @@ import {
 import Link from "next/link"
 import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { Path } from "react-hook-form"
 import { ZodType } from "zod"
 import { Input } from "@/components/ui/input"
@@ -40,6 +41,7 @@ function AuthForm<T extends FieldValues>({
   onSubmit,
 }: Props<T>) {
   const router = useRouter();
+  const { update: updateSession } = useSession();
   const form = useForm<T>({
     // @ts-ignore - The type definitions are complex, but this works at runtime
     resolver: zodResolver(schema),
@@ -54,7 +56,12 @@ function AuthForm<T extends FieldValues>({
       const result = await onSubmit(data);
       if (result?.success) {
         toast.success(type === 'SIGN_IN' ? "¡Bienvenido a TheWatcher!" : "¡Cuenta creada exitosamente!");
-        router.push("/");
+        // Forzar actualización de la sesión
+        await updateSession();
+        // Pequeño delay para asegurar que la sesión se actualice completamente
+        await new Promise(resolve => setTimeout(resolve, 300));
+        // Usar window.location para forzar una recarga completa y asegurar que la sesión se propague
+        window.location.href = "/";
       } else {
         // Mostrar mensaje de error específico si está disponible
         // Si llegamos aquí, hubo un error en la autenticación

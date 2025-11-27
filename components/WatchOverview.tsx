@@ -7,7 +7,6 @@ import { WishlistButton } from "./WishlistButton";
 import WatchCover from "./WatchCover";
 import { Watch } from "@/types";
 import { FaWhatsapp } from "react-icons/fa";
-import { formatCurrency } from "@/lib/currency";
 
 
 

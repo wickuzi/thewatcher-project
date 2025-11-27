@@ -4,21 +4,17 @@ import { watchs } from "@/database/schema";
 import { config } from "dotenv";
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
-
-// Load environment variables
+    
 config({ path: ".env.local" });
 
-// Check if required environment variables are set
 if (!process.env.DATABASE_URL) {
     console.error("Error: DATABASE_URL is not set in .env.local");
     process.exit(1);
 }
 
-// Initialize database connection
 const sql = neon(process.env.DATABASE_URL);
 const db = drizzle(sql);
 
-// Initialize ImageKit
 const imageKit = new ImageKit({
     publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || "",
     privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
@@ -33,7 +29,6 @@ const uploadToImageKit = async (url: string, fileName: string, folder: string): 
             folder,
         });
         console.log(`Uploaded ${fileName} to ImageKit`);
-        // Return the full URL instead of just the path
         return response.url;
     } catch (error) {
         console.error(`Error uploading ${fileName} to ImageKit:`, error);
@@ -46,16 +41,13 @@ const seed = async () => {
     console.log(`Found ${dummywatches.length} watches to seed`);
     
     try {
-        // Clear existing data
         console.log('Clearing existing watch data...');
         await db.delete(watchs);
         console.log('Existing data cleared successfully');
         
-        // Insert new data
         for (const [index, watch] of dummywatches.entries()) {
             console.log(`\nProcessing watch ${index + 1}/${dummywatches.length}: ${watch.name}`);
             
-            // Upload media to ImageKit
             console.log('Uploading media to ImageKit...');
             const imageUrl = await uploadToImageKit(watch.imageUrl, `${watch.name.replace(/[^a-z0-9]/gi, '_')}.png`, "/watches/images");
             const videoUrl = await uploadToImageKit(watch.videoUrl, `${watch.name.replace(/[^a-z0-9]/gi, '_')}.mp4`, "/watches/videos");
@@ -65,7 +57,6 @@ const seed = async () => {
                 continue;
             }
 
-            // Insert into database
             console.log('Inserting into database...');
             await db.insert(watchs).values({
                 ...watch,
@@ -84,7 +75,6 @@ const seed = async () => {
     }
 };
 
-// Execute the seed function
 seed().catch(error => {
     console.error("Unhandled error in seed function:", error);
     process.exit(1);

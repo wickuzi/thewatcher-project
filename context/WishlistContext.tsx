@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useState, useCallback, useEffect, ReactNode, useContext } from 'react';
+import React, { createContext, useState, useCallback, useEffect, useMemo, useRef, ReactNode, useContext } from 'react';
 import { Watch } from '@/types';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
@@ -21,9 +21,10 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
+  const lastUserIdRef = useRef<string | undefined>(undefined);
 
-  // Clave para identificar el almacenamiento local
-  const WISHLIST_STORAGE_KEY = `wishlist_${userId}`;
+  // Clave para identificar el almacenamiento local (memoizada para evitar recreaciones)
+  const WISHLIST_STORAGE_KEY = useMemo(() => `wishlist_${userId || 'anonymous'}`, [userId]);
 
   // Cargar wishlist desde la API
   const fetchWishlist = useCallback(async () => {
@@ -97,33 +98,134 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [userId]);
 
-  // Sincronizar wishlist entre pestañas
+  // Sincronizar wishlist entre pestañas y cargar cuando cambia la sesión
   useEffect(() => {
-    if (!userId) return;
+    // Esperar a que la sesión esté completamente cargada
+    if (status === 'loading') {
+      setIsLoading(true);
+      return;
+    }
 
-    // Cargar wishlist inicial
-    refreshWishlist();
-
-    // Función para manejar el almacenamiento local
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === WISHLIST_STORAGE_KEY && e.newValue) {
-        try {
-          const newWishlist = JSON.parse(e.newValue);
-          setWishlist(newWishlist);
-        } catch (error) {
-          console.error('Error al analizar la lista de deseos del almacenamiento local:', error);
-        }
+    // Si no hay usuario autenticado, limpiar la wishlist
+    if (!userId || status !== 'authenticated') {
+      setWishlist([]);
+      setIsLoading(false);
+      lastUserIdRef.current = undefined;
+      // Limpiar localStorage cuando no hay usuario
+      if (typeof window !== 'undefined' && !userId) {
+        localStorage.removeItem(WISHLIST_STORAGE_KEY);
       }
-    };
+      return;
+    }
 
-    // Escuchar cambios en el almacenamiento local
-    window.addEventListener('storage', handleStorageChange);
+    // Si el userId cambió o es la primera vez, cargar la wishlist
+    const shouldLoad = lastUserIdRef.current !== userId;
+    
+    if (shouldLoad) {
+      lastUserIdRef.current = userId;
+      let isMounted = true;
+      
+      const loadWishlist = async () => {
+        try {
+          setIsLoading(true);
+          const timestamp = new Date().getTime();
+          const response = await fetch(`/api/wishlist?userId=${userId}&t=${timestamp}`, {
+            cache: 'no-store',
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache',
+              'Expires': '0'
+            }
+          });
 
-    // Limpiar al desmontar
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, [userId, WISHLIST_STORAGE_KEY, refreshWishlist]);
+          if (!isMounted) return;
+
+          if (response.ok) {
+            const data = await response.json();
+            setWishlist(data.wishlist || []);
+            // Actualizar localStorage
+            if (typeof window !== 'undefined') {
+              localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(data.wishlist || []));
+            }
+          } else {
+            throw new Error('Error al cargar la lista de deseos');
+          }
+        } catch (error) {
+          if (!isMounted) return;
+          console.error('Error al cargar la lista de deseos:', error);
+          // Intentar cargar desde localStorage si hay un error
+          if (typeof window !== 'undefined') {
+            const cachedWishlist = localStorage.getItem(WISHLIST_STORAGE_KEY);
+            if (cachedWishlist) {
+              try {
+                setWishlist(JSON.parse(cachedWishlist));
+              } catch (parseError) {
+                console.error('Error al parsear wishlist del localStorage:', parseError);
+              }
+            }
+          }
+        } finally {
+          if (isMounted) {
+            setIsLoading(false);
+          }
+        }
+      };
+
+      // Pequeño delay para asegurar que la sesión esté completamente propagada
+      // Esto es especialmente importante después del login
+      const timer = setTimeout(() => {
+        loadWishlist();
+      }, 100);
+
+      // Función para manejar el almacenamiento local
+      const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === WISHLIST_STORAGE_KEY && e.newValue) {
+          try {
+            const newWishlist = JSON.parse(e.newValue);
+            setWishlist(newWishlist);
+          } catch (error) {
+            console.error('Error al analizar la lista de deseos del almacenamiento local:', error);
+          }
+        }
+      };
+
+      // Escuchar cambios en el almacenamiento local
+      if (typeof window !== 'undefined') {
+        window.addEventListener('storage', handleStorageChange);
+      }
+
+      // Limpiar al desmontar
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+        if (typeof window !== 'undefined') {
+          window.removeEventListener('storage', handleStorageChange);
+        }
+      };
+    } else {
+      // Si el userId no cambió, solo configurar el listener de storage
+      const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === WISHLIST_STORAGE_KEY && e.newValue) {
+          try {
+            const newWishlist = JSON.parse(e.newValue);
+            setWishlist(newWishlist);
+          } catch (error) {
+            console.error('Error al analizar la lista de deseos del almacenamiento local:', error);
+          }
+        }
+      };
+
+      if (typeof window !== 'undefined') {
+        window.addEventListener('storage', handleStorageChange);
+      }
+
+      return () => {
+        if (typeof window !== 'undefined') {
+          window.removeEventListener('storage', handleStorageChange);
+        }
+      };
+    }
+  }, [userId, status, WISHLIST_STORAGE_KEY]);
 
   // Función para agregar un reloj a la lista de deseos
   const addToWishlist = async (watch: Watch) => {

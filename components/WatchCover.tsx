@@ -2,6 +2,7 @@
 import { cn } from '@/lib/utils';
 import React from 'react';
 type WatchCoverVariant = 'extraSmall' | 'small' | 'medium' | 'regular' | 'wide';
+import { Lens } from "@/components/ui/lens";
 
 const variantStyles : Record<WatchCoverVariant, string> = {
   extraSmall: 'watch-cover_extra_small',
@@ -21,31 +22,29 @@ const WatchCover = ({className, variant="regular", imageUrl="https://placehold.c
   console.log('WatchCover - Image URL:', imageUrl);
   
   return (
-    <div className={cn('relative transition-all duration-300 flex justify-center', variantStyles[variant], className,)}>
-        
-        {/* Contenedor de la carátula con estilo responsivo */}
-        <div 
-            className={cn(
-                'relative z-10', 
-                'w-[80%] max-w-[500px] h-[88%]',
-                'rounded-lg',
-                'mx-auto' // Centrado automático
-            )} 
-        >
-          <img
-            src={imageUrl}
-            alt="cover"
-            className='w-full h-full rounded-lg object-cover'
-            loading="lazy"
-            onError={(e) => {
-              console.error('Error loading image. Original URL:', imageUrl, 'Error:', e);
-              const target = e.target as HTMLImageElement;
-              // Mostrar una imagen de respaldo si la carga falla
-              console.log('Setting fallback image');
-              target.src = 'https://placehold.co/400x600.png?text=Imagen+no+disponible';
-            }}
-            onLoad={() => console.log('Image loaded successfully:', imageUrl)}
-          />
+    <div className={cn('relative transition-all duration-300 flex justify-center', variantStyles[variant], className)}>
+        <div className={cn(
+            'relative z-10', 
+            'w-[80%] max-w-[500px] h-[88%]',
+            'rounded-lg',
+            'mx-auto',
+            'overflow-hidden',
+            'group'
+        )}>
+            <div className="relative w-full h-full">
+                <img
+                    src={imageUrl}
+                    alt="cover"
+                    className='w-full h-full rounded-lg object-cover transition-transform duration-500 ease-out group-hover:scale-110'
+                    loading="lazy"
+                    onError={(e) => {
+                        console.error('Error loading image. Original URL:', imageUrl, 'Error:', e);
+                        const target = e.target as HTMLImageElement;
+                        console.log('Setting fallback image');
+                        target.src = 'https://placehold.co/400x600.png?text=Imagen+no+disponible';
+                    }}
+                />
+            </div>
         </div>
     </div>
   ) 
